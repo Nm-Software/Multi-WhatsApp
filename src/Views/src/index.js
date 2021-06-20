@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import * as Pages from './Pages'
 import { PrivateRoute } from './Services'
-import { decideVersion } from './Functions'
 
 import {
   Collapse,
@@ -11,6 +11,23 @@ import {
 } from '@material-ui/core';
 
 import { SnackbarProvider } from 'notistack';
+
+function decideWhatsApp() {
+  if (window.screen.width <= 899) {
+    return (
+      <Pages.WhatsAppMobileScreen />
+    );
+  } else if (window.screen.height <= 500) {
+    return (
+      <Pages.WhatsAppMobileScreen />
+    );
+  } else {
+    return (
+      <Pages.WhatsAppDeskScreen />
+    );
+  }
+}
+
 
 function Routes() {
   return (
@@ -26,12 +43,18 @@ function Routes() {
       >
         <Switch>
 
+          <Route path='/' exact={true} component={Pages.HomeScreen} />
+
+          <Route path='/login' exact={true} component={Pages.LoginScreen} />
+
+          <PrivateRoute path="/whatsapp" exact={true} component={decideWhatsApp} />
+
+          <PrivateRoute path="/whatsapp/:idChat" exact={true} component={Pages.ChatScreenMobile} />
+
+          <Route path='/privacy' exact={true} component={Pages.Privacy}/>
+
           <Route path="*" exact={true}>
-            <>
-              <h2>
-                404
-              </h2>
-            </>
+            <Pages.NotFoundScreen />
           </Route>
 
         </Switch>
@@ -49,7 +72,7 @@ ReactDOM.render(
       <CssBaseline />
       <Routes />
     </ThemeProvider>
-    
+
   </React.StrictMode>,
   document.getElementById('root')
 );
